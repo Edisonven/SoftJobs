@@ -7,19 +7,21 @@ const register = async (req, res) => {
   const { email, password, rol, lenguage } = req.body;
 
   try {
+    const existingUser = await userModel.findUser(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
     await userModel.create({
       email,
       password: bcrypt.hashSync(password),
       rol,
       lenguage,
     });
+
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    if (error.code === "23505") {
-      return res.status(400).json({ message: "User already exists" });
-    }
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Internal server error",
       code: 500,
     });
