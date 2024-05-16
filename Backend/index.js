@@ -4,30 +4,12 @@ import { pool } from "./database/connection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import { verifyToken } from "./middleware/tokenMiddleware.js";
 
 const app = express();
 
 app.use(cors());
 app.use(json());
-
-const verifyToken = (req, res, next) => {
-  const autorizacionHeader = req.headers.authorization;
-  if (!autorizacionHeader) {
-    return res.status(401).json({ message: "token inválido" });
-  }
-
-  const [bearer, token] = autorizacionHeader.split(" ");
-
-  if (bearer !== "Bearer" || !token) {
-    return res.status(401).json({ message: "Autorización inválida" });
-  }
-  try {
-    jwt.verify(token, process.env.JWT_SECRET) && next();
-  } catch (error) {
-    console.log(error);
-    return res.status(401).json({ message: "token no válido, intenta nuevamente" });
-  }
-};
 
 app.post("/usuarios", async (req, res) => {
   try {
