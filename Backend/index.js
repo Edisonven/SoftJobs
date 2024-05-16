@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { verifyToken } from "./middleware/tokenMiddleware.js";
-
+as
 const app = express();
 
 app.use(cors());
@@ -78,6 +78,7 @@ app.get("/usuarios", verifyToken, async (req, res) => {
     const user = rows[0];
 
     if (!user) {
+
       return res
         .status(404)
         .json({ message: "usuario no encontrado", code: 404 });
