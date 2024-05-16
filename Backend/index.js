@@ -69,7 +69,6 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/usuarios", verifyToken, async (req, res) => {
-  // console.log("funcionó");
   try {
     const [_, token] = req.headers.authorization.split(" ");
     const query = "SELECT * FROM usuarios WHERE email = $1;";
@@ -90,6 +89,7 @@ app.get("/usuarios", verifyToken, async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("puerto en funcionamiento");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server listening on port http://localhost:${PORT}`);
 });
