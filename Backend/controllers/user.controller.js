@@ -64,4 +64,24 @@ const login = async (req, res) => {
   }
 };
 
-export const userController = { register, login };
+const checkUserToken = async (req, res) => {
+  try {
+    const [_, token] = req.headers.authorization.split(" ");
+    const { email } = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await userModel.findUser(email);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "usuario no encontrado", code: 404 });
+    }
+    res.status(200).json([user]);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+      code: 500,
+    });
+  }
+};
+
+export const userController = { register, login, checkUserToken };

@@ -15,7 +15,14 @@ const findUser = async (email) => {
   return rows[0];
 };
 
+const checkToken = async (email) => {
+  const query = "SELECT * FROM usuarios WHERE email = $1;";
+  const values = [email];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+};
 export const userModel = {
   findUser,
   create,
+  checkToken,
 };
