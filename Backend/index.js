@@ -3,9 +3,9 @@ import cors from "cors";
 import { pool } from "./database/connection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-const app = express();
+import "dotenv/config";
 
-const key = "holaSoyLaLLave";
+const app = express();
 
 app.use(cors());
 app.use(json());
@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "token no válido hola profe tito" });
   }
   try {
-    jwt.verify(token, key) && next();
+    jwt.verify(token, process.env.JWT_SECRET) && next();
   } catch (error) {
     console.log(error);
     return res.status(401).json({ message: "token no válido!!!" });
@@ -76,7 +76,7 @@ app.post("/login", async (req, res) => {
         rol: user.rol,
         lenguage: user.lenguage,
       },
-      key
+      process.env.JWT_SECRET
     );
 
     res.status(200).json({ message: "token", token });
@@ -91,7 +91,7 @@ app.get("/usuarios", verifyToken, async (req, res) => {
   try {
     const [_, token] = req.headers.authorization.split(" ");
     const query = "SELECT * FROM usuarios WHERE email = $1;";
-    const { email } = jwt.verify(token, key);
+    const { email } = jwt.verify(token, process.env.JWT_SECRET);
 
     const { rows } = await pool.query(query, [email]);
     const user = rows[0];
