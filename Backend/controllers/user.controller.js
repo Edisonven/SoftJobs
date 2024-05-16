@@ -5,6 +5,7 @@ import { userModel } from "../models/user.model.js";
 
 const register = async (req, res) => {
   const { email, password, rol, lenguage } = req.body;
+
   try {
     await userModel.create({
       email,
@@ -12,12 +13,11 @@ const register = async (req, res) => {
       rol,
       lenguage,
     });
-
+    return res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
     if (error.code === "23505") {
       return res.status(400).json({ message: "User already exists" });
     }
-    return res.status(201).json({ message: "User created successfully" });
-  } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Internal server error",
